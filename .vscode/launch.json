@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-JwtImplementationApplication<JWT-implementation>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.mohit.JwtImplementationApplication",
+            "projectName": "JWT-implementation",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
