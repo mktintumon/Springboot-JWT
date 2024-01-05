@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class AdminController {
     
-    @GetMapping("/")
+    @GetMapping("/hello")
     public String helloAdmin() {
        return "Hello Admin level";
     }

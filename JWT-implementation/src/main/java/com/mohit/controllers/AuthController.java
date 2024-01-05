@@ -14,7 +14,7 @@ import com.mohit.services.AuthService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class AuthController {
     
     @Autowired
