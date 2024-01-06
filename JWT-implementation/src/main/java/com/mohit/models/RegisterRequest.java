@@ -2,6 +2,7 @@ package com.mohit.models;
 
 
 public class RegisterRequest {
+    private String name;
     private String username;
     private String password;
 
@@ -9,9 +10,18 @@ public class RegisterRequest {
         super();
     }
 
-    public RegisterRequest(String username, String password) {
+    public RegisterRequest(String name ,String username, String password) {
+        this.name = name;
         this.username = username;
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {
@@ -29,6 +39,5 @@ public class RegisterRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
     
 }

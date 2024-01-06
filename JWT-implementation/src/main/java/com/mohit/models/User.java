@@ -30,12 +30,15 @@ public class User implements UserDetails{
     @Column(name="user_id")
     private Integer userId;
 
+    private String name;
+
     @Column(unique = true)
     private String username;
 
     @JsonIgnore
     private String password;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles" , 
@@ -56,8 +59,9 @@ public class User implements UserDetails{
 
     
 
-    public User(Integer userId, String username, String password, Set<Role> authorities) {
+    public User(Integer userId, String name , String username, String password, Set<Role> authorities) {
         this.userId = userId;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -71,6 +75,13 @@ public class User implements UserDetails{
         this.userId = userId;
     }
 
+     public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

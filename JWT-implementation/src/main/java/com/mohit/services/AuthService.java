@@ -2,12 +2,14 @@ package com.mohit.services;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.security.core.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,30 +39,40 @@ public class AuthService {
     @Autowired
     private TokenService tokenService;
 
-
-    public User registerUser(String username , String password){
-        String encodedPassword = passwordEncoder.encode(password);
-        Role userRole = roleRepo.findByAuthority("USER").get();
-
-        Set<Role> authorities = new HashSet<>();
-        authorities.add(userRole);
-
-        //return userRepo.save(new username, encodedPassword, authorities));
-        return userRepo.save(new User(0, username, encodedPassword, authorities));
+    public ResponseEntity<?> registerUser(String name ,String username, String password) {
+        try {
+            // Check if the user already exists
+            if (userRepo.existsByUsername(username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User already exists");
+            }
+    
+            String encodedPassword = passwordEncoder.encode(password);
+            Role userRole = roleRepo.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Role not found"));
+    
+            Set<Role> authorities = new HashSet<>();
+            authorities.add(userRole);
+    
+            User newUser = userRepo.save(new User(0,name, username, encodedPassword, authorities));
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering user");
+        }
     }
 
-    public LoginResponse loginUser(String username , String password){
+
+    public ResponseEntity<?> loginUser(String username , String password){
         try {
             Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            String token = tokenService.generateJwt(auth);
+            User user = userRepo.findByUsername(username).get();
 
-            return new LoginResponse(userRepo.findByUsername(username).get() , token);
+            String token = tokenService.generateJwt(auth , user.getName());
+
+            return ResponseEntity.ok(new LoginResponse(user , token));
         } catch (AuthenticationException e) {
-            return new LoginResponse(null,"");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid username/Password");
         }
     }
-    
 }

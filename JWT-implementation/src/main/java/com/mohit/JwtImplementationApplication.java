@@ -32,7 +32,7 @@ public class JwtImplementationApplication {
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
 
-			User admin = new User(1, "admin", passwordEncoder.encode("admin"), roles);
+			User admin = new User(1, "admin", "admin@gmail.com", passwordEncoder.encode("admin"), roles);
 			userRepo.save(admin);
 		};
 	}
